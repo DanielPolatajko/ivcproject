@@ -7,8 +7,30 @@ import tqdm
 import os
 import numpy as np
 import time
+from PIL import Image
 
 from pytorch_mlp_framework.storage_utils import save_statistics
+
+def neg_jaccard_loss(x,y):
+    
+    y = torch.clamp(y,0,1)
+    #print(y.numpy()[0][y.numpy()[0]>0])
+    
+    plus = x + y
+    #print(plus)
+    i = torch.eq(plus,2).float()
+    #print(i)
+    temp = torch.clamp(plus,0,1)
+    j = torch.eq(temp,1).float()
+    #print(j)
+    intersection = torch.sum(i,(1,2))
+    
+    union = torch.sum(j,(1,2))
+    
+    #print(intersection)
+    #print(union)
+    
+    return -1.*(intersection / union).mean()
 
 
 class ExperimentBuilder(nn.Module):
@@ -138,10 +160,12 @@ class ExperimentBuilder(nn.Module):
         classes = torch.argmax(out,dim=1).float()
         
         #print(classes.shape)
-        #p#rint(y.shape)
+        #print(y.shape)
 
 
-        loss = F.binary_cross_entropy(input=classes, target=y)  # compute loss
+        loss = neg_jaccard_loss(classes, y)  # compute loss
+        
+        print(loss)
         
         loss.requires_grad = True
 
@@ -168,7 +192,7 @@ class ExperimentBuilder(nn.Module):
         
         classes = torch.argmax(out,dim=1).float()
 
-        loss = F.binary_cross_entropy(input=classes, target=y)  # compute loss
+        loss = neg_jaccard_loss(classes, y)  # compute loss
         
         loss.requires_grad = True
 
@@ -236,7 +260,7 @@ class ExperimentBuilder(nn.Module):
 
             with tqdm.tqdm(total=len(self.val_data)) as pbar_val:  # create a progress bar for validation
                 for j in range(len(self.val_data)):  # get data batches
-                    temp = self.train_data.next()
+                    temp = self.val_data.next()
                     #print(temp[0].shape)
                     x,y = torch.Tensor(temp[0]),torch.Tensor(temp[1])
                     loss, accuracy = self.run_evaluation_iter(x=x, y=y)  # run a validation iter
@@ -283,7 +307,9 @@ class ExperimentBuilder(nn.Module):
                         model_save_name="train_model")
         current_epoch_losses = {"test_acc": [], "test_loss": []}  # initialize a statistics dict
         with tqdm.tqdm(total=len(self.test_data)) as pbar_test:  # ini a progress bar
-            for x, y in self.test_data:  # sample batch
+            for jdx in range(len(self.test_data)):  # sample batch
+                temp = self.test_data.next()
+                x,y = torch.Tensor(temp[0]),torch.Tensor(temp[1])
                 loss, accuracy = self.run_evaluation_iter(x=x,
                                                           y=y)  # compute loss and accuracy by running an evaluation step
                 current_epoch_losses["test_loss"].append(loss)  # save test loss
