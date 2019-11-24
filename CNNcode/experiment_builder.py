@@ -11,6 +11,8 @@ import torch
 from utils import jaccard_loss
 
 import numpy as np
+import tqdm
+import time
 
 class ExperimentBuilder(nn.Module):
     def __init__(self, network_model, experiment_name, num_epochs, train_data, val_data,
