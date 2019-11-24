@@ -5,6 +5,12 @@ import os
 
 import torch
 
+import numpy as np
+
+from scipy.signal import decimate
+
+from PIL import Image
+
 
 
 
@@ -49,7 +55,9 @@ def generate_pathlists(data_path, mask_path):
 
     return vids_img, vids_mask
 
-def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
+def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
+
+    print("Generating temporally linked dataset...")
 
     # define path to bear folder in order to deal with that one degenerate image
     bear_img_path = data_path + "/bear/"
@@ -81,31 +89,61 @@ def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
                     ix1.append(int(path[:5]))
                     ix2.append(int(path[:5]))
 
-            sortdatapaths = [i for _,i in sorted(zip(ix1,temp1))]
-            sortmaskpaths = [i for _,i in sorted(zip(ix2,temp2))]
+        sortdatapaths = [i for _,i in sorted(zip(ix1,temp1))]
+        sortmaskpaths = [i for _,i in sorted(zip(ix2,temp2))]
 
-            sortdata = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortdatapaths]
-            sortmask = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortmaskpaths]
+        temp1 = []
+        temp2 = []
+
+        if down_sample_factor > 1:
+            sortdata = []
+            sortmask = []
+            for i in sortdatapaths:
+                im = Image.open(i)
+                sortdata.append(down_sample(np.asarray(im),down_sample_factor))
+                im.close()
+            for i in sortmaskpaths:
+                im = Image.open(i)
+                sortmask.append(down_sample(np.asarray(im),down_sample_factor))
+                im.close()
+        else:
+            sortdata = []
+            sortmask = []
+            for i in sortdatapaths:
+                im = Image.open(i)
+                sortdata.append(np.asarray(im))
+                im.close()
+            for i in sortmaskpaths:
+                im = Image.open(i)
+                sortmask.append(np.asarray(im))
+                im.close()
 
 
-            l = len(sortdata)
-            tr,v = tvt_split
+        l = len(sortdata)
+        tr,v = tvt_split
 
-            temp_train = sortdata[:int(tr*l)]
-            temp_val = sortdata[int(tr*l):int(v*l)]
-            temp_test = sortdata[int(v*l):]
+        temp_train = sortdata[:int(tr*l)]
+        temp_val = sortdata[int(tr*l):int(v*l)]
+        temp_test = sortdata[int(v*l):]
 
-            X_train_t += [np.concatenate((temp_train[i],temp_train[i+1]), axis=2) for i in range(len(temp_train)-1)]
-            X_val_t += [np.concatenate((temp_val[i],temp_val[i+1]), axis=2) for i in range(len(temp_val)-1)]
-            X_test_t += [np.concatenate((temp_test[i],temp_test[i+1]), axis=2) for i in range(len(temp_test)-1)]
+        sortdata = []
 
-            y_train_t += sortmask[1:int(tr*l)]
-            y_val_t += sortmask[int(tr*l)+1:int(v*l)]
-            y_test_t += sortmask[int(v*l)+1:]
+        X_train_t += [np.concatenate((temp_train[i],temp_train[i+1]), axis=2) for i in range(len(temp_train)-1)]
+        X_val_t += [np.concatenate((temp_val[i],temp_val[i+1]), axis=2) for i in range(len(temp_val)-1)]
+        X_test_t += [np.concatenate((temp_test[i],temp_test[i+1]), axis=2) for i in range(len(temp_test)-1)]
+
+        #made some changes
+        y_train_t += sortmask[1:int(tr*l)]
+        y_val_t += sortmask[int(tr*l)+1:int(v*l)]
+        y_test_t += sortmask[int(v*l)+1:]
+
+    print("Generating dataset complete!")
 
     return X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t
 
-def generate_dataset_static(data_path, mask_path, down_sample_factor):
+def generate_dataset_static(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
+
+    print("Generating dataset...")
 
     bear_img_path = data_path + "/bear/"
     bear_mask_path = mask_path+ "/bear/"
@@ -131,8 +169,11 @@ def generate_dataset_static(data_path, mask_path, down_sample_factor):
                 if di_img+"/"+path == bear_img_path + "00077.jpg":
                     pass
                 else:
-                    img = down_sample(np.asarray(Image.open(di_img+"/"+path)),down_sample_factor)
-                    mask = down_sample(np.asarray(Image.open(di_mask+"/"+path[:-3]+"png")),down_sample_factor)
+                    img = np.asarray(Image.open(di_img+"/"+path))
+                    mask = np.asarray(Image.open(di_mask+"/"+path[:-3]+"png"))
+                    if down_sample_factor > 1:
+                        img = down_sample(img, down_sample_factor)
+                        mask = down_sample(mask, down_sample_factor)
                     temp1.append(img)
                     temp2.append(mask)
         l = len(temp1)
@@ -143,5 +184,7 @@ def generate_dataset_static(data_path, mask_path, down_sample_factor):
         y_train += temp2[:int(tr*l)]
         y_val += temp2[int(tr*l):int(v*l)]
         y_test += temp2[int(v*l):]
+
+    print("Generating dataset complete!")
 
     return X_train, X_val, X_test, y_train, y_val, y_test
