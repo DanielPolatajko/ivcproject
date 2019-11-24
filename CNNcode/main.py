@@ -50,7 +50,9 @@ def main():
     y_test = np.array(y_test)
     print(y_train.shape)
     print(y_val.shape)
-    print(y_test.shape)"""
+    print(y_test.shape)
+
+    """
 
     X_train_t = np.array(X_train_t).swapaxes(-1,-3).swapaxes(-2,-1)
     X_val_t = np.array(X_val_t).swapaxes(-1,-3).swapaxes(-2,-1)
