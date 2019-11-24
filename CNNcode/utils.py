@@ -111,7 +111,7 @@ def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
 
     return X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t
 
-def generate_dataset_static(data_path, mask_path, down_sample_factor):
+def generate_dataset_static(data_path, mask_path, down_sample_factor=1):
 
     bear_img_path = data_path + "/bear/"
     bear_mask_path = mask_path+ "/bear/"
@@ -137,8 +137,11 @@ def generate_dataset_static(data_path, mask_path, down_sample_factor):
                 if di_img+"/"+path == bear_img_path + "00077.jpg":
                     pass
                 else:
-                    img = down_sample(np.asarray(Image.open(di_img+"/"+path)),down_sample_factor)
-                    mask = down_sample(np.asarray(Image.open(di_mask+"/"+path[:-3]+"png")),down_sample_factor)
+                    img = np.asarray(Image.open(di_img+"/"+path))
+                    mask = np.asarray(Image.open(di_mask+"/"+path[:-3]+"png"))
+                    if down_sample_factor > 1:
+                        img = down_sample(img, down_sample_factor)
+                        mask = down_sample(mask, down_sample_factor)
                     temp1.append(img)
                     temp2.append(mask)
         l = len(temp1)
