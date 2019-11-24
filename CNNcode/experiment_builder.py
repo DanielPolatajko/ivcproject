@@ -2,6 +2,11 @@
 
 import storage_utils as storage_utils
 import torch.nn as nn
+import torch.nn.functional as F
+
+import torch
+
+from utils import jaccard_loss
 
 
 class ExperimentBuilder(nn.Module):
