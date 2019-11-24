@@ -93,8 +93,8 @@ def main():
 
     #static_net_shallow=ShallowNetwork(input_shape=inputs_shape)
     #static_net_deeper=DeeperNetwork(input_shape=inputs_shape)
-    temporal_net_shallow = ShallowNetwork(input_shape=inputs_shape_t)
-    #temporal_net_deeper = DeeperNetwork(input_shape=inputs_shape_t)
+    #temporal_net_shallow = ShallowNetwork(input_shape=inputs_shape_t)
+    temporal_net_deeper = DeeperNetwork(input_shape=inputs_shape_t)
 
     """experiment_name= "static_run_shallow"
     num_epochs = 30
@@ -124,7 +124,7 @@ def main():
                                         test_data=test_data)  # build an experiment object
     experiment_metrics, test_metrics = experiment_1.run_experiment()  # run experiment and return experiment metrics"""
 
-    experiment_name= "temporal_run_shallow"
+    """experiment_name= "temporal_run_shallow"
     num_epochs = 30
     use_gpu=True
     continue_from_epoch=-1
@@ -136,9 +136,9 @@ def main():
                                         continue_from_epoch=continue_from_epoch,
                                         train_data=train_data_t, val_data=val_data_t,
                                         test_data=test_data_t)  # build an experiment object
-    experiment_metrics, test_metrics = experiment_3.run_experiment()  # run experiment and return experiment metrics
+    experiment_metrics, test_metrics = experiment_3.run_experiment()  # run experiment and return experiment metrics"""
 
-    """experiment_name= "temporal_run_deeper"
+    experiment_name= "temporal_run_deeper"
     num_epochs = 30
     use_gpu=True
     continue_from_epoch=-1
@@ -150,7 +150,7 @@ def main():
                                         continue_from_epoch=continue_from_epoch,
                                         train_data=train_data_t, val_data=val_data_t,
                                         test_data=test_data_t)  # build an experiment object
-    experiment_metrics, test_metrics = experiment_1.run_experiment()  # run experiment and return experiment metrics"""
+    experiment_metrics, test_metrics = experiment_4.run_experiment()  # run experiment and return experiment metrics"""
 
 if __name__ == '__main__':
     main()
