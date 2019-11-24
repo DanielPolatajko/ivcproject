@@ -111,7 +111,7 @@ def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
 
     return X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t
 
-def generate_dataset_static(data_path, mask_path, down_sample_factor=1):
+def generate_dataset_static(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
 
     bear_img_path = data_path + "/bear/"
     bear_mask_path = mask_path+ "/bear/"

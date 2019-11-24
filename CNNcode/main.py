@@ -34,8 +34,10 @@ def main():
     data_path = str(par / "data/DAVIS//JPEGImages/480p/")
     mask_path = str(par / "data/DAVIS/Annotations/480p/")
 
-    X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path, N)
-    X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path, N)
+    tvt_split = (0.5,0.7)
+
+    X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path,tvt_split, N)
+    X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
 
     X_train = np.array(X_train).swapaxes(1,3).swapaxes(2,3)
     X_val = np.array(X_val).swapaxes(1,3).swapaxes(2,3)
