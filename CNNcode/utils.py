@@ -111,6 +111,7 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
         X_val_t += [np.concatenate((temp_val[i],temp_val[i+1]), axis=2) for i in range(len(temp_val)-1)]
         X_test_t += [np.concatenate((temp_test[i],temp_test[i+1]), axis=2) for i in range(len(temp_test)-1)]
 
+        #made some changes
         y_train_t += sortmask[1:int(tr*l)]
         y_val_t += sortmask[int(tr*l)+1:int(v*l)]
         y_test_t += sortmask[int(v*l)+1:]
