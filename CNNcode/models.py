@@ -233,7 +233,7 @@ class DeeperNetwork(nn.Module):
         out =self.layer_dict['conv_t_2'].forward(out)
         out = F.leaky_relu(out)
 
-        self.layer_dict['final'] = nn.Conv2d(in_channels=16,out_channels=1,kernel_size=self.kernel_size, padding = self.padding)
+        self.layer_dict['final'] = nn.Conv2d(in_channels=32,out_channels=1,kernel_size=self.kernel_size, padding = self.padding)
         out =self.layer_dict['final'].forward(out)
 
 
