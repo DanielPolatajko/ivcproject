@@ -14,7 +14,7 @@ from utils import generate_dataset_static, generate_dataset_temporal, jaccard_lo
 
 from PIL import Image
 #from matplotlib.pyplot import imshow
-from scipy.spatial.distance import cdist
+#from scipy.spatial.distance import cdist
 from scipy.signal import decimate
 
 import torch.nn as nn
@@ -31,8 +31,8 @@ def main():
     # define paths to image and mask files
     cwd = Path(os.getcwd())
     par = cwd.parent
-    data_path = str(par / "input/davis-data/davis-data/DAVIS/JPEGImages/480p/")
-    mask_path = str(par / "input/davis-data/davis-data/DAVIS/Annotations/480p/")
+    data_path = str(par / "data/DAVIS//JPEGImages/480p/")
+    mask_path = str(par / "data/DAVIS/Annotations/480p/")
 
     X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path, N)
     X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path, N)
