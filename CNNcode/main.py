@@ -136,7 +136,7 @@ def main():
                                         continue_from_epoch=continue_from_epoch,
                                         train_data=train_data_t, val_data=val_data_t,
                                         test_data=test_data_t)  # build an experiment object
-    experiment_metrics, test_metrics = experiment_1.run_experiment()  # run experiment and return experiment metrics
+    experiment_metrics, test_metrics = experiment_3.run_experiment()  # run experiment and return experiment metrics
 
     """experiment_name= "temporal_run_deeper"
     num_epochs = 30
