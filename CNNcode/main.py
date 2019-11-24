@@ -76,6 +76,8 @@ def main():
     test_data = data_providers.DataProvider(X_test,y_test,batch_size,shuffle_order=True)
 
     """
+
+    batch_size = 25
     train_data_t = data_providers.DataProvider(X_train_t,y_train_t,batch_size,shuffle_order=True)
     val_data_t = data_providers.DataProvider(X_val_t,y_val_t,batch_size,shuffle_order=True)
     test_data_t = data_providers.DataProvider(X_test_t,y_test_t,batch_size,shuffle_order=True)
