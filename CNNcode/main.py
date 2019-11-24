@@ -13,7 +13,7 @@ import storage_utils as storage_utils
 from utils import generate_dataset_static, generate_dataset_temporal, jaccard_loss
 
 from PIL import Image
-from matplotlib.pyplot import imshow
+#from matplotlib.pyplot import imshow
 from scipy.spatial.distance import cdist
 from scipy.signal import decimate
 
