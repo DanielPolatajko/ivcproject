@@ -92,12 +92,31 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
         sortdatapaths = [i for _,i in sorted(zip(ix1,temp1))]
         sortmaskpaths = [i for _,i in sorted(zip(ix2,temp2))]
 
+        temp1 = []
+        temp2 = []
+
         if down_sample_factor > 1:
-            sortdata = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortdatapaths]
-            sortmask = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortmaskpaths]
+            sortdata = []
+            sortmask = []
+            for i in sortdatapaths:
+                im = Image.open(i)
+                sortdata.append(down_sample(np.asarray(im),down_sample_factor))
+                im.close()
+            for i in sortmaskpaths:
+                im = Image.open(i)
+                sortmask.append(down_sample(np.asarray(im),down_sample_factor))
+                im.close()
         else:
-            sortdata = [np.asarray(Image.open(i)) for i in sortdatapaths]
-            sortmask = [np.asarray(Image.open(i)) for i in sortmaskpaths]
+            sortdata = []
+            sortmask = []
+            for i in sortdatapaths:
+                im = Image.open(i)
+                sortdata.append(np.asarray(im))
+                im.close()
+            for i in sortmaskpaths:
+                im = Image.open(i)
+                sortmask.append(np.asarray(im))
+                im.close()
 
 
         l = len(sortdata)
@@ -106,6 +125,8 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
         temp_train = sortdata[:int(tr*l)]
         temp_val = sortdata[int(tr*l):int(v*l)]
         temp_test = sortdata[int(v*l):]
+
+        sortdata = []
 
         X_train_t += [np.concatenate((temp_train[i],temp_train[i+1]), axis=2) for i in range(len(temp_train)-1)]
         X_val_t += [np.concatenate((temp_val[i],temp_val[i+1]), axis=2) for i in range(len(temp_val)-1)]
