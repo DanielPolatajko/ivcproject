@@ -55,7 +55,9 @@ def generate_pathlists(data_path, mask_path):
 
     return vids_img, vids_mask
 
-def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
+def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
+
+    print("Generating temporally linked dataset...")
 
     # define path to bear folder in order to deal with that one degenerate image
     bear_img_path = data_path + "/bear/"
@@ -90,8 +92,12 @@ def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
             sortdatapaths = [i for _,i in sorted(zip(ix1,temp1))]
             sortmaskpaths = [i for _,i in sorted(zip(ix2,temp2))]
 
-            sortdata = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortdatapaths]
-            sortmask = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortmaskpaths]
+            if down_sample_factor > 1:
+                sortdata = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortdatapaths]
+                sortmask = [down_sample(np.asarray(Image.open(i)),down_sample_factor) for i in sortmaskpaths]
+            else:
+                sortdata = [np.asarray(Image.open(i)) for i in sortdatapaths]
+                sortmask = [np.asarray(Image.open(i)) for i in sortmaskpaths]
 
 
             l = len(sortdata)
@@ -109,9 +115,13 @@ def generate_dataset_temporal(data_path, mask_path, down_sample_factor):
             y_val_t += sortmask[int(tr*l)+1:int(v*l)]
             y_test_t += sortmask[int(v*l)+1:]
 
+    print("Generating dataset complete!")
+
     return X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t
 
 def generate_dataset_static(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
+
+    print("Generating dataset...")
 
     bear_img_path = data_path + "/bear/"
     bear_mask_path = mask_path+ "/bear/"
@@ -152,5 +162,7 @@ def generate_dataset_static(data_path, mask_path,tvt_split=(0.5,0.7), down_sampl
         y_train += temp2[:int(tr*l)]
         y_val += temp2[int(tr*l):int(v*l)]
         y_test += temp2[int(v*l):]
+
+    print("Generating dataset complete!")
 
     return X_train, X_val, X_test, y_train, y_val, y_test
