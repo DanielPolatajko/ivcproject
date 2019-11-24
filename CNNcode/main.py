@@ -36,8 +36,8 @@ def main():
 
     tvt_split = (0.5,0.7)
 
-    X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path,tvt_split, N)
-    #X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
+    #X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path,tvt_split, N)
+    X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
 
     """
     X_train = np.array(X_train).swapaxes(1,3).swapaxes(2,3)
