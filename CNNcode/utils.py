@@ -9,6 +9,8 @@ import numpy as np
 
 from scipy.signal import decimate
 
+from PIL import Image
+
 
 
 
