@@ -85,7 +85,7 @@ def main():
 
     bear_path = Path(os.getcwd()).parent / "data" / "DAVIS" / "JPEGImages" / "480p" / "bear"
 
-    bear = Image.open(str(bear_path/"00001.jpg")).convert(mode="RGB")
+    bear = np.asarray(Image.open(str(bear_path/"00001.jpg")).convert(mode="RGB"))
 
     inp = torch.Tensor(down_sample(np.asarray(bear),4).swapaxes(0,2).swapaxes(1,2)).unsqueeze(0)
 
@@ -98,7 +98,11 @@ def main():
 
     mask = 255 * mask
 
-    mask_img = Image.fromarray(mask, mode='L').resize((480,854))
+    mask_img = Image.fromarray(mask, mode='L')
+
+    bear = down_sample(bear,4)
+    bear = Image.fromarray(bear)
+
 
     overlay = overlay_segment(bear, mask_img)
 
