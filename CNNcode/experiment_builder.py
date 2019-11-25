@@ -308,3 +308,10 @@ class ExperimentBuilder(nn.Module):
                         stats_dict=test_losses, current_epoch=0, continue_from_mode=False)
 
         return total_losses, test_losses
+
+    def get_bear(self, model_path, bear):
+        self.load_model(model_save_dir=model_path, model_idx=29,
+                        # load best validation model
+                        model_save_name="train_model")
+
+        return self.model.forward(bear)

@@ -49,9 +49,12 @@ def main():
 
     new_model = DeepestNetwork((25,3,120,214))
 
-    model = nn.DataParallel(module=new_model)
+    batch_size = 25
+    train_data_t = data_providers.DataProvider(X_train_t,y_train_t,batch_size,shuffle_order=True)
+    val_data_t = data_providers.DataProvider(X_val_t,y_val_t,batch_size,shuffle_order=True)
+    test_data_t = data_providers.DataProvider(X_test_t,y_test_t,batch_size,shuffle_order=True)
 
-    #eb = ExperimentBuilder(new_model, "get_bear", 1, )
+    eb = ExperimentBuilder(new_model, "get_bear", 1, train_data_t, val_data_t, test_data_t, True)
 
     model_path = Path(os.getcwd())
     model_path = model_path / "static_run_deepest" / "saved_models" / "train_model_29"
