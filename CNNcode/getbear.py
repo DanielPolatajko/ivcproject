@@ -49,6 +49,15 @@ def main():
 
     new_model = DeepestNetwork((25,3,120,214))
 
+    N=4
+
+    cwd = Path(os.getcwd())
+    par = cwd.parent
+    data_path = str(par / "data/DAVIS//JPEGImages/480p/")
+    mask_path = str(par / "data/DAVIS/Annotations/480p/")
+
+    tvt_split = (0.5,0.7)
+
     X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
 
     X_train_t = np.array(X_train_t).swapaxes(-1,-3).swapaxes(-2,-1)
