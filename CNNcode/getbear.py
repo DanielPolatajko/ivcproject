@@ -52,7 +52,11 @@ def main():
     model_path = Path(os.getcwd())
     model_path = model_path / "static_run_deepest" / "saved_models" / "train_model_29"
 
-    new_model.load_state_dict(torch.load(model_path))
+    state = torch.load(model_path)
+
+    state_dict = state['network']
+
+    new_model.load_state_dict(state_dict)
 
     bear_path = Path(os.getcwd()).parent / "data" / "JPEGImages" / "480p" / "bear"
 
