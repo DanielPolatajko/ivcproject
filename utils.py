@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.signal import decimate
+import os
+from PIL import Image
 
 def down_sample(img,n):
     img_d=decimate(img, n, n=2, ftype='iir',axis=0, zero_phase=True)
@@ -56,4 +58,46 @@ def jaccard_index(img1, img2):
 
     return intersection / union
 
-def generate_datasets()
+def generate_dataset_unsupervised(data_path,mask_path,hsv=False):
+
+    bear_img_path = data_path + "/bear/"
+    bear_mask_path = mask_path+ "/bear/"
+
+    vids_img = []
+    for thing,_,_ in os.walk(data_path):
+        vids_img.append(thing)
+
+    vids_mask = []
+    for thing,_,_ in os.walk(mask_path):
+        #print(thing)
+        vids_mask.append(thing)
+
+    imgs = []
+    masks = []
+
+    for i in range(len(vids_img[1:])):
+        di_img = vids_img[i+1]
+        di_mask = vids_mask[i+1]
+        temp1 = []
+        temp2 = []
+        for _,_,paths in os.walk(di_img):
+            for path in paths:
+                #print(path)
+                if di_img+"/"+path == bear_img_path + "00077.jpg":
+                    #print(path)
+                    pass
+                else:
+                    #print(path)
+                    im = Image.open(di_img+"/"+path)
+                    if hsv:
+                        im = im.convert('HSV')
+                    img = np.asarray(im)
+                    #print(di_mask)
+                    mask = np.asarray(Image.open(di_mask+"/"+path[:-3]+"png"))
+                    temp1.append(img)
+                    temp2.append(mask)
+
+        imgs += temp1
+        masks +=  temp2
+
+    return imgs, masks

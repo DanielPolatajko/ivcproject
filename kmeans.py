@@ -4,9 +4,11 @@ from PIL import Image
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 from scipy.signal import decimate
-from utils import down_sample, normalise, colourlist
+from utils import down_sample, xyrgb, colourlist, generate_dataset_unsupervised, jaccard_index, normalise
+import time
+from random import shuffle
 
-K=10
+K=2
 N=4
 
 def RunKMeans(features, img_shape, clusters=K):
@@ -49,44 +51,44 @@ def main():
     data_path = os.getcwd() + "/data/JPEGImages/480p/"
     anno_path = os.getcwd() + "/data/Annotations/480p/"
 
-    """img_paths = []
-    mask_paths = []
+    imgs,masks = generate_dataset_unsupervised(data_path, anno_path,hsv=False)
 
-    for root,_,paths  in os.walk(data_path):
-        img_paths += [root+path for path in paths]
+    shuffle(imgs)
+    shuffle(masks)
 
-    for root,_,paths in os.walk(anno_path):
-        mask_paths"""
+    j_scores = []
+    print("There are " + str(len(imgs)) + " images in the dataset.")
 
-    vids_img = []
-    for thing,_,_ in os.walk(data_path):
-        vids_img.append(thing)
+    for i in range(len(imgs)):
+        a = time.time()
+        print(i)
+        img = imgs[i]
+        mask = masks[i]
 
-    vids_mask = []
-    for thing,_,_ in os.walk(mask_path):
-        #print(thing)
-        vids_mask.append(thing)
+        features = normalise(xyrgb(img).T)
 
-    imgs = []
-    masks = []
+        labels = RunKMeans(features, mask.shape, K)
 
-    for i in range(len(vids_img[1:])):
-        di_img = vids_img[i+1]
-        di_mask = vids_mask[i+1]
-        temp1 = []
-        temp2 = []
-        for _,_,paths in os.walk(di_img):
-            for path in paths:
-                #print(path)
-                if di_img+"/"+path == bear_img_path + "00077.jpg":
-                    #print(path)
-                    pass
-                else:
-                    #print(path)
-                    img = np.asarray(Image.open(di_img+"/"+path))
-                    mask = np.asarray(Image.open(di_mask+"/"+path[:-3]+"png"))
-                    temp1.append(img)
-                    temp2.append(mask)
+        best_label = FindForegroundCluster(labels, mask, K)
 
-        imgs += temp1
-        masks +=  temp2
+        binary_fore = np.where(labels == best_label, 1, 0)
+        binary_mask = np.where(mask >0 , 1 , 0)
+
+        j = jaccard_index(binary_fore,binary_mask)
+
+        print("This runs jscore" + str(j))
+
+        j_scores.append(j)
+
+        b = time.time()
+
+        print("Running mean j-score" + str(np.mean(j_scores)))
+
+        print(b-a)
+
+    print("The mean Jaccard index across the data was " + str(np.mean(j_scores)))
+
+    return j_scores
+
+if __name__ == "__main__":
+    main()
