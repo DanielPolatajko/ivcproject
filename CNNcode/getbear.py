@@ -49,7 +49,7 @@ def main():
 
     new_model = DeepestNetwork((25,3,120,214))
 
-    model_path = Path(os.getcwd()).parent
+    model_path = Path(os.getcwd())
     model_path = model_path / "static_run_deepest" / "saved_models"
 
     new_model.load_state_dict(torch.load(model_path))
