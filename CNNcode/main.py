@@ -37,7 +37,7 @@ def main():
     tvt_split = (0.5,0.7)
 
     X_train, X_val, X_test, y_train, y_val, y_test = generate_dataset_static(data_path,mask_path,tvt_split, N)
-    X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
+    #X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
 
 
     X_train = np.array(X_train).swapaxes(1,3).swapaxes(2,3)
@@ -55,7 +55,7 @@ def main():
 
 
 
-    X_train_t = np.array(X_train_t).swapaxes(-1,-3).swapaxes(-2,-1)
+    """X_train_t = np.array(X_train_t).swapaxes(-1,-3).swapaxes(-2,-1)
     X_val_t = np.array(X_val_t).swapaxes(-1,-3).swapaxes(-2,-1)
     X_test_t = np.array(X_test_t).swapaxes(-1,-3).swapaxes(-2,-1)
     print(X_train_t.shape)
@@ -66,7 +66,7 @@ def main():
     y_test_t = np.array(y_test_t)
     print(y_train_t.shape)
     print(y_val_t.shape)
-    print(y_test_t.shape)
+    print(y_test_t.shape)"""
 
 
 
@@ -77,17 +77,17 @@ def main():
 
 
 
-    batch_size = 25
-    train_data_t = data_providers.DataProvider(X_train_t,y_train_t,batch_size,shuffle_order=True)
-    val_data_t = data_providers.DataProvider(X_val_t,y_val_t,batch_size,shuffle_order=True)
-    test_data_t = data_providers.DataProvider(X_test_t,y_test_t,batch_size,shuffle_order=True)
+    #batch_size = 25
+    #train_data_t = data_providers.DataProvider(X_train_t,y_train_t,batch_size,shuffle_order=True)
+    #val_data_t = data_providers.DataProvider(X_val_t,y_val_t,batch_size,shuffle_order=True)
+    #test_data_t = data_providers.DataProvider(X_test_t,y_test_t,batch_size,shuffle_order=True)
 
 
     inputs_shape = X_train[:batch_size].shape
     inputs_shape
 
-    inputs_shape_t = X_train_t[:batch_size].shape
-    inputs_shape_t
+    #inputs_shape_t = X_train_t[:batch_size].shape
+    #inputs_shape_t
 
     print("Time to make networks!")
 
@@ -96,7 +96,7 @@ def main():
     #temporal_net_shallow = ShallowNetwork(input_shape=inputs_shape_t)
     #temporal_net_deeper = DeeperNetwork(input_shape=inputs_shape_t)
     static_net_deepest = DeepestNetwork(input_shape=inputs_shape)
-    temporal_net_deepest = DeepestNetwork(input_shape=inputs_shape_t)
+    #temporal_net_deepest = DeepestNetwork(input_shape=inputs_shape_t)
 
     """experiment_name= "static_run_shallow"
     num_epochs = 30
