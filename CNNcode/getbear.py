@@ -98,7 +98,7 @@ def main():
 
     mask = 255 * mask
 
-    mask_img = Image.fromarray(mask, mode='L')
+    mask_img = Image.fromarray(mask, mode='L').resize((480,854))
 
     overlay = overlay_segment(bear, mask_img)
 
