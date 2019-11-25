@@ -49,6 +49,10 @@ def main():
 
     new_model = DeepestNetwork((25,3,120,214))
 
+    model = nn.DataParallel(module=new_model)
+
+    #eb = ExperimentBuilder(new_model, "get_bear", 1, )
+
     model_path = Path(os.getcwd())
     model_path = model_path / "static_run_deepest" / "saved_models" / "train_model_29"
 
@@ -56,7 +60,7 @@ def main():
 
     state_dict = state['network']
 
-    new_model.load_state_dict(state_dict)
+    model.load_state_dict(state_dict)
 
     bear_path = Path(os.getcwd()).parent / "data" / "JPEGImages" / "480p" / "bear"
 
