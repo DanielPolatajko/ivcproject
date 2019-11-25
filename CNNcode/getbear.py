@@ -10,7 +10,7 @@ import data_provider as data_providers
 from experiment_builder import ExperimentBuilder
 from models import ShallowNetwork, DeeperNetwork, DeepestNetwork
 import storage_utils as storage_utils
-from utils import generate_dataset_static, generate_dataset_temporal, jaccard_loss
+from utils import generate_dataset_static, generate_dataset_temporal, jaccard_loss, down_sample
 
 from PIL import Image
 from scipy.signal import decimate
