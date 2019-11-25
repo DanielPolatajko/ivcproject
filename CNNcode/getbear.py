@@ -49,6 +49,21 @@ def main():
 
     new_model = DeepestNetwork((25,3,120,214))
 
+    X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t = generate_dataset_temporal(data_path, mask_path,tvt_split, N)
+
+    X_train_t = np.array(X_train_t).swapaxes(-1,-3).swapaxes(-2,-1)
+    X_val_t = np.array(X_val_t).swapaxes(-1,-3).swapaxes(-2,-1)
+    X_test_t = np.array(X_test_t).swapaxes(-1,-3).swapaxes(-2,-1)
+    print(X_train_t.shape)
+    print(X_val_t.shape)
+    print(X_test_t.shape)
+    y_train_t = np.array(y_train_t)
+    y_val_t = np.array(y_val_t)
+    y_test_t = np.array(y_test_t)
+    print(y_train_t.shape)
+    print(y_val_t.shape)
+    print(y_test_t.shape)
+
     batch_size = 25
     train_data_t = data_providers.DataProvider(X_train_t,y_train_t,batch_size,shuffle_order=True)
     val_data_t = data_providers.DataProvider(X_val_t,y_val_t,batch_size,shuffle_order=True)
@@ -71,7 +86,7 @@ def main():
 
     inp = down_sample(np.asarray(bear),4).swapaxes(1,3).swapaxes(2,3)
 
-    out = new_model.forward(inp)
+    out = eb.get_bear(model_path, inp)
     out = out.squeeze()
 
     predicted = F.sigmoid(out) > 0.5
