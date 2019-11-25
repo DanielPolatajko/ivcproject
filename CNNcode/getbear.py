@@ -81,7 +81,7 @@ def main():
     eb = ExperimentBuilder(new_model, "get_bear", 1, train_data_t, val_data_t, test_data_t, True)
 
     model_path = Path(os.getcwd())
-    model_path = model_path / "static_run_deepest" / "saved_models" / "train_model_29"
+    model_path = model_path / "static_run_deepest" / "saved_models"
 
     bear_path = Path(os.getcwd()).parent / "data" / "DAVIS" / "JPEGImages" / "480p" / "bear"
 
