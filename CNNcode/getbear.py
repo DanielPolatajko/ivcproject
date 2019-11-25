@@ -85,7 +85,7 @@ def main():
 
     bear_path = Path(os.getcwd()).parent / "data" / "JPEGImages" / "480p" / "bear"
 
-    bear = Image.open(bear_path+"00001.jpg").convert(mode="RGB")
+    bear = Image.open(str(bear_path/"00001.jpg")).convert(mode="RGB")
 
     inp = down_sample(np.asarray(bear),4).swapaxes(1,3).swapaxes(2,3)
 
