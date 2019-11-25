@@ -168,7 +168,7 @@ def main():
                                         test_data=test_data)  # build an experiment object
     experiment_metrics, test_metrics = experiment_5.run_experiment()  # run experiment and return experiment metrics
 
-    experiment_name= "temporal_run_deepest"
+    """experiment_name= "temporal_run_deepest"
     num_epochs = 50
     use_gpu=True
     continue_from_epoch=-1
@@ -180,7 +180,7 @@ def main():
                                         continue_from_epoch=continue_from_epoch,
                                         train_data=train_data_t, val_data=val_data_t,
                                         test_data=test_data_t)  # build an experiment object
-    experiment_metrics, test_metrics = experiment_6.run_experiment()  # run experiment and return experiment metrics
+    experiment_metrics, test_metrics = experiment_6.run_experiment()  # run experiment and return experiment metrics"""
 
 if __name__ == '__main__':
     main()
