@@ -314,4 +314,6 @@ class ExperimentBuilder(nn.Module):
                         # load best validation model
                         model_save_name="train_model")
 
+        bear = bear.to(device=self.device)
+
         return self.model.forward(bear)
