@@ -94,7 +94,7 @@ def main():
 
     predicted = F.sigmoid(out) > 0.5
 
-    mask = predicted.numpy().astype('uint8')
+    mask = predicted.cpu().numpy().astype('uint8')
 
     mask = 255 * mask
 
