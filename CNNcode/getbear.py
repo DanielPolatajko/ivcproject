@@ -87,7 +87,7 @@ def main():
 
     bear = Image.open(str(bear_path/"00001.jpg")).convert(mode="RGB")
 
-    inp = down_sample(np.asarray(bear),4).swapaxes(1,3).swapaxes(2,3)
+    inp = down_sample(np.asarray(bear),4).swapaxes(0,2).swapaxes(1,2)
 
     out = eb.get_bear(model_path, inp)
     out = out.squeeze()
