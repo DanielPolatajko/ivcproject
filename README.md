@@ -17,10 +17,11 @@ For the deep learning environment, navigate to the folder CNNcode and run:
 
 ### Running Experiments
 
+For the $K$-means experiments, navigate to the classicalcode directory and run:
 
+`python kmeans.py`
 
-
-
+The results will be printed to stdout as the experiment runs.
 
 
 
