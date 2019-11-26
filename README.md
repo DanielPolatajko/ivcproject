@@ -28,10 +28,12 @@ For the K-means experiments, navigate to the kmeans directory and run:
 The results will be printed to stdout as the experiment runs.
 
 Mean shift, graph cut and energy minimisation experiments are run in jupyter notebook, where results are printed in the notebook.
-For mean shift, run the notebook 
-For graph cut, run the notebook
-For energy minimisation, run the notebook
 
+For mean shift, run the notebook `mean_shift.ipynb` through
+
+For graph cut, run the notebook `GraphCut.ipynb` through
+
+For energy minimisation, run the notebook `crf.ipynb` through
 
 
 For the deep learning experiments, navigate to the CNNcode directory, and run:
