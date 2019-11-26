@@ -1,0 +1,11 @@
+name: ivc_classical
+dependencies:
+  - python=3.6
+  - os
+  - pillow
+  - numpy
+  - scipy
+  - tqdm
+  - scikit-learn
+  - pystruct
+  - matplotlib
