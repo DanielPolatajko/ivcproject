@@ -1,3 +1,7 @@
+"""
+    helper script to generate image of the bear used in report,
+    with overlay of foreground prediction by best models
+"""
 import sys
 import os
 from pathlib import Path

@@ -11,39 +11,43 @@ from scipy.signal import decimate
 
 from PIL import Image
 
+def jaccard_loss(x,y,epsilon = 1e-10):
 
-
-
-epsilon = 1e-10
-def jaccard_loss(x,y):
+    """
+        calculate Jaccard score of two binary mask images
+    """
 
     x = x.float()
     x = torch.clamp(x,0,1).float()
     y = torch.clamp(y,0,1).float()
-    #print(y.numpy()[0][y.numpy()[0]>0])
+
 
     plus = x.add(y)
-    #print(plus)
+
     i = torch.eq(plus,2).float()
-    #print(i)
+
     temp = torch.clamp(plus,0,1)
     j = torch.eq(temp,1).float()
-    #print(j)
+
     intersection = torch.sum(i,(-1,-2))
 
     union = torch.sum(j,(-1,-2))
 
-    #print(intersection)
-    #print(union)
-
     return ((intersection+epsilon) / (epsilon+union)).mean()
 
 def down_sample(img,n):
+    """
+        reduce image size. Use if dataset is to large to be loaded
+    """
     img_d=decimate(img, n, n=2, ftype='fir',axis=0, zero_phase=True)
     img_d=decimate(img_d, n, n=2, ftype='iir',axis=1, zero_phase=True)
     return img_d.astype("uint8")
 
 def generate_pathlists(data_path, mask_path):
+
+    """
+        generate list of paths to data files and mask files
+    """
 
     vids_img = []
     for dir,_,_ in os.walk(data_path):
@@ -57,12 +61,17 @@ def generate_pathlists(data_path, mask_path):
 
 def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
 
+    """
+        generate numpy array datasets of the images
+    """
+
     print("Generating temporally linked dataset...")
 
     # define path to bear folder in order to deal with that one degenerate image
     bear_img_path = data_path + "/bear/"
     bear_mask_path = mask_path+ "/bear/"
 
+    # get paths
     vids_img, vids_mask = generate_pathlists(data_path,mask_path)
 
     X_train_t = []
@@ -72,6 +81,7 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
     y_val_t = []
     y_test_t = []
 
+    # for each path, get images and store
     for i in range(len(vids_img[1:])):
         di_img = vids_img[i+1]
         di_mask = vids_mask[i+1]
@@ -81,6 +91,7 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
         ix2 = []
         for _,_,paths in os.walk(di_img):
             for path in paths:
+                # degenerate bear
                 if di_img+"/"+path == bear_img_path + "00077.jpg":
                     pass
                 else:
@@ -89,12 +100,14 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
                     ix1.append(int(path[:5]))
                     ix2.append(int(path[:5]))
 
+        # ensure temporal property is satisfied
         sortdatapaths = [i for _,i in sorted(zip(ix1,temp1))]
         sortmaskpaths = [i for _,i in sorted(zip(ix2,temp2))]
 
         temp1 = []
         temp2 = []
 
+        # take care of image reduction
         if down_sample_factor > 1:
             sortdata = []
             sortmask = []
@@ -119,6 +132,7 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
                 im.close()
 
 
+        # split into training, val and test sets
         l = len(sortdata)
         tr,v = tvt_split
 
@@ -142,6 +156,10 @@ def generate_dataset_temporal(data_path, mask_path,tvt_split=(0.5,0.7), down_sam
     return X_train_t, X_val_t, X_test_t, y_train_t, y_val_t, y_test_t
 
 def generate_dataset_static(data_path, mask_path,tvt_split=(0.5,0.7), down_sample_factor=1):
+
+    """
+        generates datasets as above but without temporal linking
+    """
 
     print("Generating dataset...")
 

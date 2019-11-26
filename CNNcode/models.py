@@ -6,6 +6,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+"""
+    Classes for convolutional ResNets of varying depth, used in main.py
+    to perform deep learning on DAVIS data
+"""
+
+
 
 class ShallowNetwork(nn.Module):
     def __init__(self,input_shape):
@@ -15,6 +21,8 @@ class ShallowNetwork(nn.Module):
         # set up class attributes useful in building the network and inference
         self.input_shape=input_shape
         self.num_output_classes = 2
+
+        # size 3 kernels throughout, pad to ensure shape consistency
         self.kernel_size = 3
         self.padding =  (self.kernel_size // 2, self.kernel_size // 2)
 
@@ -24,11 +32,6 @@ class ShallowNetwork(nn.Module):
     def build_module(self):
         """
         Builds network whilst automatically inferring shapes of layers.
-
-        #conv2d        3, 16, 8
-        #conv2d        16, 8, 8
-        #transpose     8, 16, 8
-        #transpose     16, 1, 8
 
         """
         self.layer_dict = nn.ModuleDict()
@@ -80,6 +83,10 @@ class ShallowNetwork(nn.Module):
         return out
 
     def forward(self, x):
+
+        """
+            forward pass of convolutional network
+        """
         out = x
         out = self.layer_dict['conv_0'].forward(out)
         out = F.leaky_relu(out)
