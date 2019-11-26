@@ -2,7 +2,17 @@
 
 import storage_utils as storage_utils
 import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import os
 
+import torch
+
+from utils import jaccard_loss
+
+import numpy as np
+import tqdm
+import time
 
 class ExperimentBuilder(nn.Module):
     def __init__(self, network_model, experiment_name, num_epochs, train_data, val_data,
@@ -126,9 +136,9 @@ class ExperimentBuilder(nn.Module):
 
         out = out.squeeze()
 
-        y = torch.clamp(y,0,1)
+        y = torch.clamp(y,0,1) # turn ground truth to binary mask
 
-        predicted = F.sigmoid(out) > 0.5  # get argmax of predictions
+        predicted = F.sigmoid(out) > 0.5  # get predictions from probabilities
 
         predicted = predicted.float()
 
@@ -140,7 +150,7 @@ class ExperimentBuilder(nn.Module):
         self.learning_rate_scheduler.step(epoch=self.current_epoch)
         self.optimizer.step()  # update network parameters
 
-        # blah blah
+        # evaluate accuracy and j score, return to be saved
         accuracy = np.mean(list(predicted.eq(y.data).reshape(-1).cpu()))  # compute accuracy
         j = jaccard_loss(predicted,y)
         return loss.cpu().data.numpy(), accuracy, j.item()
@@ -218,7 +228,6 @@ class ExperimentBuilder(nn.Module):
             with tqdm.tqdm(total=len(self.train_data)) as pbar_train:  # create a progress bar for training
                 for idx in range(len(self.train_data)):  # get data batches
                     temp = self.train_data.next()
-                    #print(temp[0].shape)
                     x,y = torch.Tensor(temp[0]).to(device=self.device),torch.Tensor(temp[1]).to(device=self.device)
                     loss, accuracy, j = self.run_train_iter(x=x, y=y)  # take a training iter step
                     current_epoch_losses["train_loss"].append(loss)  # add current iter loss to the train loss list
@@ -298,3 +307,15 @@ class ExperimentBuilder(nn.Module):
                         stats_dict=test_losses, current_epoch=0, continue_from_mode=False)
 
         return total_losses, test_losses
+
+    def get_bear(self, model_path, bear):
+        """
+            Utility for getting image of bear predicted by a model
+        """
+        self.load_model(model_save_dir=model_path, model_idx=29,
+                        # load best validation model
+                        model_save_name="train_model")
+
+        bear = bear.to(device=self.device)
+
+        return self.model.forward(bear)

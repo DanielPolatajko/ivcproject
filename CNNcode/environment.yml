@@ -1,0 +1,15 @@
+name: ivc_cnn
+dependencies:
+  - numpy
+  - pickle
+  - gzip
+  - sys
+  - os
+  - pillow
+  - pytorch
+  - torchvision
+  - tqdm
+  - time
+  - sys
+  - scipy
+  - csv
